@@ -50,17 +50,13 @@ class Renderer(object):
         for layer in self.tmx_data.visible_layers:
             if isinstance(layer, pytmx.TiledTileLayer):
                 # TiledTileLayers support iteration
-                # here we get the tile x,y coordinates, and the tile GID
-                # Tiled stores tile images as GID, so that is how we will, too
-                for x, y, gid in layer:
-                    # if there is no tile in this position, GID will == 0
-                    if gid:
-                        # get the tile for this GID.
-                        tile = gt(gid)
-                        # x and y are in tile coordinates
-                        # to get screen coordinates, we must multiply by
-                        # byt the size of the tile (tw and th)
-                        surface.blit(tile, (x * tw, y * th))
+                # here we get the tile x,y coordinates, and the tile image
+                # this tiles() method will skip unused tiles
+                for x, y, image in layer.tiles():
+                    # x and y are in tile coordinates
+                    # to get screen coordinates, we must multiply by
+                    # byt the size of the tile (tw and th)
+                    surface.blit(image, (x * tw, y * th))
 
             # TODO
             elif isinstance(layer, pytmx.TiledObjectGroup):
